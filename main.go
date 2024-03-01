@@ -4,8 +4,9 @@ import (
 	"level_5/config"
 	"level_5/controller"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
+	jwtware "github.com/gofiber/jwt/v3"
 )
 
 func main() {
@@ -13,28 +14,11 @@ func main() {
 
 	config.Connect()
 
-	app.Use(basicauth.New(basicauth.Config{
-		Users: map[string]string{
-			"john":  "doe",
-			"admin": "123456",
-		},
-		Realm: "Forbidden",
-		Authorizer: func(user, pass string) bool {
-			if user == "john" && pass == "doe" {
-				return true
-			}
-			if user == "admin" && pass == "123456" {
-				return true
-			}
-			return false
-		},
-		Unauthorized: func(c *fiber.Ctx) error {
-			return c.Status(401).SendString("Unauthorized")
-		},
-		ContextUsername: "_user",
-		ContextPassword: "_pass",
+	app.Use(jwtware.New(jwtware.Config{
+		SigningKey: []byte("secret"),
 	}))
 
+	app.Post("/login", controller.Login)
 	app.Get("/department", controller.GetDepartment)
 	app.Post("/department", controller.AddDepartment)
 	app.Get("/department/:id", controller.GetDepartmentById)
@@ -47,4 +31,11 @@ func main() {
 	app.Put("/employee/:id", controller.UpdateEmployee)
 
 	app.Listen(": 3000")
+}
+
+func Restricted(c *fiber.Ctx) error {
+	user := c.Locals("admin").(jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	name := claims["name"].(string)
+	return c.SendString("Welcome " + name)
 }
