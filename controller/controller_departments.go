@@ -11,7 +11,7 @@ import (
 func GetDepartment(c *fiber.Ctx) error {
 	var departments []model.Department
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -28,7 +28,7 @@ func GetDepartmentById(c *fiber.Ctx) error {
 
 	result := config.Database.Find(&department, id)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -47,7 +47,7 @@ func GetDepartmentById(c *fiber.Ctx) error {
 func AddDepartment(c *fiber.Ctx) error {
 	department := new(model.Department)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -66,7 +66,7 @@ func UpdateDepartment(c *fiber.Ctx) error {
 	id := c.Params("id")
 	department := new(model.Department)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -88,7 +88,7 @@ func DeleteDepartmentById(c *fiber.Ctx) error {
 
 	result := config.Database.Delete(&department, id)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {

@@ -4,9 +4,9 @@ import (
 	"level_5/config"
 	"level_5/controller"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func main() {
@@ -14,11 +14,11 @@ func main() {
 
 	config.Connect()
 
+	app.Post("/login", controller.Login)
 	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: []byte("secret"),
+		SigningKey: []byte("secret"), ContextKey: "admin",
 	}))
 
-	app.Post("/login", controller.Login)
 	app.Get("/department", controller.GetDepartment)
 	app.Post("/department", controller.AddDepartment)
 	app.Get("/department/:id", controller.GetDepartmentById)

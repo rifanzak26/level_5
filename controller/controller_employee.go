@@ -9,7 +9,7 @@ import (
 )
 
 func GetEmployee(c *fiber.Ctx) error {
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -28,7 +28,7 @@ func GetEmployeeById(c *fiber.Ctx) error {
 
 	result := config.Database.Find(&employee, id)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -50,7 +50,7 @@ func AddEmployee(c *fiber.Ctx) error {
 	if err := c.BodyParser(employee); err != nil {
 		return c.Status(503).SendString(err.Error())
 	}
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -68,7 +68,7 @@ func UpdateEmployee(c *fiber.Ctx) error {
 	if err := c.BodyParser(employee); err != nil {
 		return c.Status(503).SendString(err.Error())
 	}
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
@@ -86,7 +86,7 @@ func DeleteEmployeeById(c *fiber.Ctx) error {
 
 	result := config.Database.Delete(&employee, id)
 
-	user := c.Locals("admin").(jwt.Token)
+	user := c.Locals("admin").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	if name != "admin" {
